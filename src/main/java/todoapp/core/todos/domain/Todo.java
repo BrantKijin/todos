@@ -1,9 +1,11 @@
 package todoapp.core.todos.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  * 할 일 엔티티(Entity)
@@ -15,6 +17,9 @@ public class Todo {
 
     @Id
     private Long id;
+
+    @NotBlank
+    @Size(min =4, max=140)
     private String title;
     private TodoState state = TodoState.ACTIVE;
 
@@ -36,6 +41,9 @@ public class Todo {
     }
 
     private void setTitle(String title) {
+//        if(Objects.isNull(title) || title.trim().length() == 4){
+//            throw new TodoCreationException("할 일은 최소 4자 이상 작성하세요.");
+//        }
         this.title = title;
     }
 
