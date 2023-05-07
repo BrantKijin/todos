@@ -1,9 +1,9 @@
 package todoapp;
 
 
-import java.util.Collections;
 import java.util.List;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import todoapp.core.todos.application.TodoFinder;
 import todoapp.core.todos.domain.Todo;
@@ -17,8 +17,14 @@ public class TodoRestController {
     this.finder = finder;
   }
 
-  @RequestMapping("/api/todos")
+
+  @GetMapping("/api/todos")
   public List<Todo> list(){
     return finder.getAll();
+  }
+
+  @PostMapping("/api/todos")
+  public void create(){
+
   }
 }
