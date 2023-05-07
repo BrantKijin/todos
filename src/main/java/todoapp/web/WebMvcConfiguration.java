@@ -44,11 +44,11 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 //            .addResourceLocations("file:/Users/gwaggijin/study/todos/files/assets/");
 
         //classpath 경로에서 자원제공
-        registry
-            .addResourceHandler("/assets/**")
-            .addResourceLocations(
-                "assets/",
-                "file:/Users/gwaggijin/study/todos/files/assets/",
-                "classpath:assets/");
+//        registry
+//            .addResourceHandler("/assets/**")
+//            .addResourceLocations(
+//                "assets/",
+//                "file:/Users/gwaggijin/study/todos/files/assets/",
+//                "classpath:assets/");
     }
 }
