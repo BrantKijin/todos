@@ -6,3 +6,7 @@ logging:
 site:
   author: SpringTestRunner
   description: What are your plans today?
+
+todos:
+  data:
+    initialize: true

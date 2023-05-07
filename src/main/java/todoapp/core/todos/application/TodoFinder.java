@@ -1,8 +1,7 @@
 package todoapp.core.todos.application;
 
-import todoapp.core.todos.domain.Todo;
-
 import java.util.List;
+import todoapp.core.todos.domain.Todo;
 
 /**
  * 할 일 검색기 인터페이스
