@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,6 +47,14 @@ public class TodoRestController {
     // JsonNode Map<String, Object>
     editor.create(command.getTitle());
   }
+
+  @DeleteMapping("/api/todos/{id}")
+  public void delete(@PathVariable("id") Long id){
+    editor.delete(id);
+  }
+
+
+
   static class CreateTodoCommand{
     @NotBlank
     @Size(min =4, max=140)
