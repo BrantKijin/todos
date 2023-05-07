@@ -1,5 +1,7 @@
 package todoapp.web;
 
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
@@ -9,7 +11,10 @@ import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
  *
  * @author springrunner.kr@gmail.com
  */
+@Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
+
+
 
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
@@ -28,4 +33,22 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     }
 
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+       // 리소스 핸들러를 등록, 정적 자원을 처리할수 있다
+        // 서블릿 컨텍스트 경로에서 정적 자원 제공
+        //registry.addResourceHandler("/assets/**").addResourceLocations("assets/");
+
+        // 파일 경로에서 정적 자원 제공
+//        registry.addResourceHandler("/assets/**")
+//            .addResourceLocations("file:/Users/gwaggijin/study/todos/files/assets/");
+
+        //classpath 경로에서 자원제공
+        registry
+            .addResourceHandler("/assets/**")
+            .addResourceLocations(
+                "assets/",
+                "file:/Users/gwaggijin/study/todos/files/assets/",
+                "classpath:assets/");
+    }
 }
