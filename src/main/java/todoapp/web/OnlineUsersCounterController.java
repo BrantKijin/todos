@@ -1,13 +1,8 @@
 package todoapp.web;
 
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import todoapp.web.support.ConnectedClientCountBroadcaster;
 
