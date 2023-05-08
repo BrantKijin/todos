@@ -7,6 +7,7 @@ import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.WebRequest;
@@ -30,8 +31,17 @@ import todoapp.core.todos.domain.TodoEntityNotFoundException;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ReadableErrorAttributes implements ErrorAttributes, HandlerExceptionResolver, Ordered {
 
+
+
     private final DefaultErrorAttributes delegate = new DefaultErrorAttributes();
     private final Logger log = LoggerFactory.getLogger(ReadableErrorAttributes.class);
+
+
+    private final Environment environment;
+
+    public ReadableErrorAttributes(Environment environment) {
+        this.environment = environment;
+    }
 
     @Override
     public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions options) {
@@ -41,11 +51,14 @@ public class ReadableErrorAttributes implements ErrorAttributes, HandlerExceptio
         log.debug("errorAttributes: {}, error: {}", attributes, error);
 
         if (Objects.nonNull(error)) {
-            if(error instanceof TodoEntityNotFoundException){
-                attributes.put("message","요청한 할 일을 찾을 수 없어요");
-            } else if(error instanceof MethodArgumentNotValidException){
-                attributes.put("message","입력 값이 없거나 올바르지 않아요");
-            }
+            String errorCode = String.format("Excetion.%",error.getClass().getSimpleName());
+            String errorMessage = environment.getProperty(errorCode, error.getMessage());
+            attributes.put("message",errorMessage);
+//            if(error instanceof TodoEntityNotFoundException){
+//                attributes.put("message",environment.getProperty("Exception.TodoEntityNotFoundException"));
+//            } else if(error instanceof MethodArgumentNotValidException){
+//                attributes.put("message",environment.getProperty("Exception.MethodArgumentNotValidException"));
+//            }
         }
 
         return attributes;
