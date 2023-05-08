@@ -30,10 +30,10 @@ public class TodoController {
     this.finder = finder;
   }
 
-  @RequestMapping("/todos")
-  public void todos(Model model){
-    model.addAttribute("site", siteProperties);
-  }
+//  @RequestMapping("/todos")
+//  public void todos(Model model){
+//    model.addAttribute("site", siteProperties);
+//  }
 
   @RequestMapping(path = "/todos", produces = "text/csv")
   public void downloadTodos(Model model){
