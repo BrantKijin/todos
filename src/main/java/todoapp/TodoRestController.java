@@ -17,12 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 import todoapp.core.todos.application.TodoEditor;
 import todoapp.core.todos.application.TodoFinder;
 import todoapp.core.todos.domain.Todo;
+import todoapp.security.UserSessionRepository;
 
 @RestController
 public class TodoRestController {
 
   private final TodoFinder finder;
   private final TodoEditor editor;
+
 
   public TodoRestController(TodoFinder finder, TodoEditor editor) {
     this.finder = finder;
@@ -31,6 +33,7 @@ public class TodoRestController {
 
   @GetMapping("/api/todos")
   public List<Todo> list(){
+
     return finder.getAll();
   }
 

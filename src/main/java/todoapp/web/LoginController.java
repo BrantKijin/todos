@@ -1,8 +1,7 @@
 package todoapp.web;
 
 
-
-import javax.servlet.http.HttpSession;
+import java.util.Objects;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import org.springframework.stereotype.Controller;
@@ -12,12 +11,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.ModelAndView;
 import todoapp.core.user.application.UserPasswordVerifier;
 import todoapp.core.user.application.UserRegistration;
 import todoapp.core.user.domain.User;
 import todoapp.core.user.domain.UserEntityNotFoundException;
 import todoapp.core.user.domain.UserPasswordNotMatchedException;
+import todoapp.security.UserSession;
+import todoapp.security.UserSessionRepository;
 import todoapp.web.model.SiteProperties;
 
 @Controller
@@ -27,12 +27,14 @@ public class LoginController {
   private final UserPasswordVerifier userPasswordVerifier;
   private final UserRegistration userRegistration;
 
+  private final UserSessionRepository userSessionRepository;
 
   private final SiteProperties siteProperties;
 
-  public LoginController(UserPasswordVerifier userPasswordVerifier, UserRegistration userRegistration, SiteProperties siteProperties) {
+  public LoginController(UserPasswordVerifier userPasswordVerifier, UserRegistration userRegistration, UserSessionRepository userSessionRepository, SiteProperties siteProperties) {
     this.userPasswordVerifier = userPasswordVerifier;
     this.userRegistration = userRegistration;
+    this.userSessionRepository = userSessionRepository;
     this.siteProperties = siteProperties;
   }
 
@@ -42,16 +44,19 @@ public class LoginController {
 //  }
 
   @GetMapping("/login")
-  public ModelAndView loginForm(Model model){
-
-    return new ModelAndView("/login");
+  public String loginForm(){
+    UserSession userSession = userSessionRepository.get();
+    // User user = (User) session.getAttribute("user");
+    if (Objects.nonNull(userSession)) {
+      return "redirect:/todos";
+    }
+    return "/login";
   }
 
   @PostMapping("/login")
   public String loginProcess(@Valid LoginCommand command
       ,BindingResult bindingResult
-      , Model model
-      , HttpSession session){
+      , Model model ){
     // 0 입력 값 검증에 실패한 경우 : 로그인 페이지로 돌려보내기
 
     // 1 사용자 저장소에 사용자가 있을 경우 : 비밀번호 확인후 로그인 처리
@@ -72,7 +77,9 @@ public class LoginController {
       model.addAttribute("message", error.getMessage());
       return "login";
     }
-    session.setAttribute("user",user);
+    //session.setAttribute("user",user);
+    model.addAttribute("user",user);
+    userSessionRepository.set(new UserSession(user));
 
     return "redirect:/todos";
   }
