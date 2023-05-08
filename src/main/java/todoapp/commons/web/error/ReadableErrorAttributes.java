@@ -1,5 +1,7 @@
 package todoapp.commons.web.error;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
@@ -68,13 +70,23 @@ public class ReadableErrorAttributes implements ErrorAttributes, HandlerExceptio
             }
 
 
-            attributes.put("message",errorMessage);
 
 //            if(error instanceof TodoEntityNotFoundException){
 //                attributes.put("message",environment.getProperty("Exception.TodoEntityNotFoundException"));
 //            } else if(error instanceof MethodArgumentNotValidException){
 //                attributes.put("message",environment.getProperty("Exception.MethodArgumentNotValidException"));
 //            }
+
+            attributes.put("message",errorMessage);
+            BindingResult bindingResult = extractBindingResult(error);
+            if(Objects.nonNull(bindingResult)){
+                List<String> errors = bindingResult.getAllErrors()
+                    .stream()
+                    .map(oe -> messageSource.getMessage(oe, webRequest.getLocale()))
+                    .collect(Collectors.toList());
+
+                attributes.put("errors",errors);
+            }
         }
 
         return attributes;
