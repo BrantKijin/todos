@@ -1,8 +1,14 @@
 package todoapp.web;
 
 
+
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -39,9 +45,17 @@ public class LoginController {
   }
 
   @PostMapping("/login")
-  public String loginProcess(LoginCommand command){
+  public String loginProcess(@Valid LoginCommand command, BindingResult bindingResult, Model model){
+    // 0 입력 값 검증에 실패한 경우 : 로그인 페이지로 돌려보내기
+
     // 1 사용자 저장소에 사용자가 있을 경우 : 비밀번호 확인후 로그인 처리
     // 2 사용자가 없는 경우: 회원가입 처리 후로그인 처리
+    if(command.getUsername().length() < 4){
+      // 입력값이 올바르지 않습니다.
+      model.addAttribute("bingingResult", bindingResult);
+      model.addAttribute("message", "입력값이 없거나 올바르지 않아요.");
+      return "login";
+    }
     try{
       userPasswordVerifier.verify(command.username, command.password);
     }catch (UserEntityNotFoundException error){
@@ -51,7 +65,16 @@ public class LoginController {
 
   }
 
+  @ExceptionHandler(BindException.class)
+  public String handleBindException(BindException error, Model model){
+    model.addAttribute("bindingResult", error.getBindingResult());
+    model.addAttribute("message", "입력 값이 없거나 올바르지 않아요.");
+    return "login";
+  }
+
+
   static class LoginCommand {
+    @Size(min = 4, max = 20)
     String username;
     String password;
 
