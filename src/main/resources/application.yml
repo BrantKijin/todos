@@ -17,3 +17,6 @@ server:
     encoding:
       mapping:
         ko: UTF-8
+  error:
+    include-message: always
+    include-binding-errors: always
