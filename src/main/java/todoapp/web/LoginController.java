@@ -6,20 +6,28 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
+import todoapp.core.user.application.UserPasswordVerifier;
+import todoapp.core.user.application.UserRegistration;
+import todoapp.core.user.domain.UserEntityNotFoundException;
 import todoapp.web.model.SiteProperties;
 
 @Controller
 public class LoginController {
 
 
+  private final UserPasswordVerifier userPasswordVerifier;
+  private final UserRegistration userRegistration;
+
 
   private final SiteProperties siteProperties;
 
-  public LoginController(SiteProperties siteProperties) {
+  public LoginController(UserPasswordVerifier userPasswordVerifier, UserRegistration userRegistration, SiteProperties siteProperties) {
+    this.userPasswordVerifier = userPasswordVerifier;
+    this.userRegistration = userRegistration;
     this.siteProperties = siteProperties;
   }
 
-//  @ModelAttribute("site")
+  //  @ModelAttribute("site")
 //  public SiteProperties siteProperties(){
 //    return siteProperties;
 //  }
@@ -31,7 +39,15 @@ public class LoginController {
   }
 
   @PostMapping("/login")
-  public void loginProcess(LoginCommand loginCommand){
+  public String loginProcess(LoginCommand command){
+    // 1 사용자 저장소에 사용자가 있을 경우 : 비밀번호 확인후 로그인 처리
+    // 2 사용자가 없는 경우: 회원가입 처리 후로그인 처리
+    try{
+      userPasswordVerifier.verify(command.username, command.password);
+    }catch (UserEntityNotFoundException error){
+      userRegistration.join(command.username, command.password);
+    }
+    return "redirect:/todos";
 
   }
 
