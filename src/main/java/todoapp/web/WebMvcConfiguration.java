@@ -1,11 +1,20 @@
 package todoapp.web;
 
+
+import java.util.List;
+
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.ObjectToStringHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
+import todoapp.core.todos.domain.Todo;
 import todoapp.web.TodoController.TodoCsvView;
 
 /**
@@ -41,6 +50,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         }
 
     }
+
+
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
