@@ -10,3 +10,10 @@ site:
 todos:
   data:
     initialize: true
+
+
+server:
+  servlet:
+    encoding:
+      mapping:
+        ko: UTF-8
