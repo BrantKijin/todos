@@ -10,6 +10,10 @@ site:
 todos:
   data:
     initialize: true
+  feature:
+    toggles:
+      auth: true
+      onlineUsersCounter: false
 
 
 server:
@@ -20,6 +24,7 @@ server:
   error:
     include-message: always
     include-binding-errors: always
+
 
 Exception:
   TodoEntityNotFoundException: 요청한 일을 찾을수 없어요.
