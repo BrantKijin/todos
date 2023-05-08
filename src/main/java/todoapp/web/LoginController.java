@@ -2,6 +2,7 @@ package todoapp.web;
 
 
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import todoapp.core.user.application.UserPasswordVerifier;
 import todoapp.core.user.application.UserRegistration;
+import todoapp.core.user.domain.User;
 import todoapp.core.user.domain.UserEntityNotFoundException;
 import todoapp.core.user.domain.UserPasswordNotMatchedException;
 import todoapp.web.model.SiteProperties;
@@ -46,7 +48,10 @@ public class LoginController {
   }
 
   @PostMapping("/login")
-  public String loginProcess(@Valid LoginCommand command, BindingResult bindingResult, Model model){
+  public String loginProcess(@Valid LoginCommand command
+      ,BindingResult bindingResult
+      , Model model
+      , HttpSession session){
     // 0 입력 값 검증에 실패한 경우 : 로그인 페이지로 돌려보내기
 
     // 1 사용자 저장소에 사용자가 있을 경우 : 비밀번호 확인후 로그인 처리
@@ -57,17 +62,19 @@ public class LoginController {
       model.addAttribute("message", "입력값이 없거나 올바르지 않아요.");
       return "login";
     }
+    User user;
     try{
-      userPasswordVerifier.verify(command.username, command.password);
+      user = userPasswordVerifier.verify(command.username, command.password);
     }catch (UserEntityNotFoundException error){
-      userRegistration.join(command.username, command.password);
+      user = userRegistration.join(command.username, command.password);
     }catch (UserPasswordNotMatchedException error){
       //3 비밀 번호가 틀린 경우: 로그인 페이지로 돌려보내기
       model.addAttribute("message", error.getMessage());
       return "login";
     }
-    return "redirect:/todos";
+    session.setAttribute("user",user);
 
+    return "redirect:/todos";
   }
 
   @ExceptionHandler(BindException.class)
