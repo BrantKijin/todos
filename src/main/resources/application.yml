@@ -13,7 +13,7 @@ todos:
   feature:
     toggles:
       auth: true
-      onlineUsersCounter: false
+      onlineUsersCounter: true
 
 
 server:
