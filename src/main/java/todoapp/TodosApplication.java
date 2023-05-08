@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
-import todoapp.web.model.SiteProperties;
+import todoapp.commons.web.error.ReadableErrorAttributes;
 
 
 @SpringBootApplication
@@ -19,6 +19,11 @@ public class TodosApplication {
 //	public SiteProperties siteProperties(){
 //		return new SiteProperties();
 //	}
+
+	@Bean
+	public ReadableErrorAttributes errorAttributes(){
+		return new ReadableErrorAttributes();
+	}
 
 
 
