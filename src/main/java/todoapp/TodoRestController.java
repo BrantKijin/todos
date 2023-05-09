@@ -2,6 +2,7 @@ package todoapp;
 
 
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -20,6 +21,7 @@ import todoapp.core.todos.domain.Todo;
 import todoapp.security.UserSessionRepository;
 
 @RestController
+@RolesAllowed("ROLE_USER")
 public class TodoRestController {
 
   private final TodoFinder finder;
@@ -32,6 +34,7 @@ public class TodoRestController {
   }
 
   @GetMapping("/api/todos")
+
   public List<Todo> list(){
 
     return finder.getAll();
