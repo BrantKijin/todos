@@ -2,16 +2,23 @@ package todoapp.web;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+import todoapp.commons.web.servlet.ExecutionTimeHandlerInterceptor;
+import todoapp.commons.web.servlet.LoggingHandlerInterceptor;
 import todoapp.commons.web.view.CommaSeparatedValuesView;
 import todoapp.security.UserSessionRepository;
 import todoapp.security.web.servlet.UserSessionHandlerMEthodArgumentResolver;
@@ -47,7 +54,27 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     }
 
-//    @Bean(name="todos")
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LoggingHandlerInterceptor());
+        registry.addInterceptor(new ExecutionTimeHandlerInterceptor());
+    }
+
+    @Bean
+    public FilterRegistrationBean<CommonsRequestLoggingFilter> commonsRequestLoggingFilterFilterRegistrationBean(){
+
+        CommonsRequestLoggingFilter commonsRequestLoggingFilter = new CommonsRequestLoggingFilter();
+        commonsRequestLoggingFilter.setIncludeClientInfo(true);
+        commonsRequestLoggingFilter.setIncludePayload(true);
+        commonsRequestLoggingFilter.setIncludePayload(true);
+
+        FilterRegistrationBean<CommonsRequestLoggingFilter> filter = new FilterRegistrationBean<>();
+        filter.setFilter(commonsRequestLoggingFilter);
+        filter.setUrlPatterns(Collections.singletonList("/*"));
+        return filter;
+    }
+
+    //    @Bean(name="todos")
 //    public CommaSeparatedValuesView todoCsvVIew(){
 //        return new CommaSeparatedValuesView();
 //    }
